@@ -2,16 +2,6 @@ load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_library", "boost_so_library", "hdr_list")
 
-_suppress_warnings = selects.with_or({
-    (":linux", ":osx"): [
-        "/w",
-    ],
-    (":windows"): [
-        "/w"
-    ],
-    "//conditions:default": [],
-})
-
 config_setting(
     name = "linux",
     constraint_values = [
@@ -386,7 +376,10 @@ boost_library(
         ],
         "//conditions:default": [],
     }),
-    linkopts = ["-lpthread"],
+    linkopts = select({
+        ":windows": [],
+        "//conditions:default": ["-lpthread"],
+    }),
     deps = [
         ":bind",
         ":cerrno",
@@ -554,7 +547,6 @@ boost_library(
     hdrs = [
         "libs/container/src/dlmalloc_2_8_6.c",
     ],
-    copts = _suppress_warnings,
     deps = [
         ":config",
         ":core",
@@ -748,7 +740,6 @@ boost_library(
 
 boost_library(
     name = "filesystem",
-    copts = _suppress_warnings,
     deps = [
         ":config",
         ":functional",
@@ -1097,7 +1088,7 @@ boost_library(
         ":linux_x86_64": BOOST_LOCALE_POSIX_COPTS,
         ":osx_x86_64": BOOST_LOCALE_POSIX_COPTS,
         ":windows_x86_64": BOOST_LOCALE_WIN32_COPTS,
-    }) + _suppress_warnings,
+    }),
     deps = [
         ":assert",
         ":config",

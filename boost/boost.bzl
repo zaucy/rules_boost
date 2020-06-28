@@ -19,8 +19,10 @@ srcs_patterns = [
 # Building boost results in many warnings for unused values. Downstream users
 # won't be interested, so just disable the warning.
 default_copts = select({
-    "@boost//:windows": [],
-    "//conditions:default": ["-Wno-unused"],
+    "@boost//:linux": ["-w"],
+    "@boost//:osx": ["-w"],
+    "@boost//:windows": ["/w"],
+    "//conditions:default": [],
 })
 
 default_defines = select({
