@@ -161,9 +161,10 @@ cc_library(
     defines = [
         "ZSTD_MULTITHREAD",
     ],
-    linkopts = [
-        "-pthread",
-    ],
+    linkopts = select({
+        ":windows": [],
+        "//conditions:default": ["-lpthread"],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         ":debug",
