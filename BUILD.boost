@@ -623,7 +623,10 @@ boost_library(
 
 boost_library(
     name = "date_time",
-    srcs = glob(["libs/date_time/src/**/*.cpp"]),
+    srcs = glob(["libs/date_time/src/**/*.cpp"], exclude = [
+        "libs/date_time/src/gregorian/greg_weekday.cpp",
+        "libs/date_time/src/gregorian/date_generators.cpp",
+    ]),
     hdrs = glob(["libs/date_time/src/**/*.hpp"]),
     deps = [
         ":algorithm",
